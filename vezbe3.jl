@@ -71,12 +71,12 @@ function primer3!(dx, x, p, t)
 end
 
 #Parametri i pocetna stanja
-x0 = [0.0, 0.0]
+x0 = [0.0, 0.0, 0.0, 0.0]
 t = (0.0, 10.0)
 p = (10.0, 15.0, 20.0, 20.0, 20.0, 40.0,40.0)
 
 prob = ODEProblem(primer3!, x0, t,p)
-s = solve(prob)
+sol = solve(prob)
 
 #Koordinate pozicije prvog i drugog tela
 poz1 = [x[1] for x in sol.u]
@@ -87,11 +87,14 @@ poz2 = [x[3] for x in sol.u]
 ~, index2 = findmax(abs.(poz2))
 
 plot(sol.t, [poz1, poz2])
-plot!([sol.t[index1], poz1[index1], markershape =: o)
-plot!([sol.t[index2], poz2[index2], markershape =: o)
+plot!([sol.t[index1]], [poz1[index1]])
+plot!([sol.t[index2]], [poz2[index2]])
 
 put1 = sum(abs.(diff(poz1)))
 put2 = sum(abs.(diff(poz2)))
+println(put1)
+println(put2)
+
 
 
 

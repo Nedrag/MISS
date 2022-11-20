@@ -183,9 +183,81 @@ pp2 = sum(abs.(diff(poz2)))
 
 #Zadatak 2
 
+function f6(t)
+	tp = rem.(t, 1)
+	y1 = t/2 .* ((tp .>= 0) .& (tp .< 0.5) )
+	y2 = 0 .* ((tp .>= 0.5) .& (tp .< 1))
+	return y1 + y2
+end
+
+function primer6!(dx, x, t, p)
+	m1, m2, k1, k2, c1, c2, g = p
+	dx[1] = x[2]
+	dx[2] = (1/m1)*(m1*g + k2*(x[3] -x[1]) - k1*x[1] - c1*x[2])
+	dx[3] = x[4]
+	dx[4] = (1/m2)*(f6(t) + m2*g - c2*x[4] - k2*(x[3] - x[1]))
+end
+
+x0 = [-1.0, 0.0, -1.0, 0.0]
+t = (0.0, 10.0)
+p = (20.0, 10.0, 20.0, 40.0, 10.0, 10.0, 9.81)
+
+prob = ODEProblem(primer6!, x0, t, p)
+s = solve(prob)
+
+v1 = [x[2] for x in s.u]
+poz1 = [x[1] for x in s.u]
 
 
 
+plot(s)
+plot!(s.t, [v1, poz1])
+
+a1 = diff(v1) ./ diff(s.t)
+-, a_max = findmax(abs.(a1))
+
+plot!([s.t[a_max]], [a1[a_max]])
+
+
+#Zadatak 3
+
+function f7(t)
+	return sin(3*t/3.14)
+end
+
+function primer7!(dx, x, t, p)
+	m1, m2, m3, k, c, g = p
+	dx[1] = x[2]
+	dx[2] = (1/m1) * (m1*g + c * (x[4] - x[2]) + k* ( x[3] - x[1]) -k * x[1])
+	dx[3] = x[4]
+	dx[4] = (1/m2) * (m2*g + k*(x[5] - x[3]) -c * (x[4] - x[2]) - k * (x[3] - x[1]))
+	dx[5] = x[6]
+	dx[6] = (1/m3) * (m3*g - f7(t) - k * (x[5] - x[3]))
+end
+
+x0 = [0.0, 3.0,0.0, 3.0,0.0, 3.0]
+t = (0.0, 12.0)
+p = (5.0, 5.0, 10.0, 15.0, 10.0, 9.81)
+
+prob = ODEProblem(primer7!, x0, t, p)
+sol = solve(prob)
+
+plot(sol)
+
+poz1 = [x[1] for x in sol.u]
+poz2 = [x[3] for x in sol.u]
+
+-,poz_max1 = findmax(abs.(poz1))
+-,poz_max2 = findmax(abs.(poz2))
+
+plot(sol.t, [poz1, poz2])
+plot!([sol.t[poz_max1]], [poz1[poz_max1]])
+plot!([sol.t[poz_max2]], [poz2[poz_max2]])
+
+poz3 = [x[5] for x in sol.u]
+
+rastojanje = abs.(poz2 .- poz3)
+plot!(sol.t, rastojanje)
 
 
 

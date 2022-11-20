@@ -1,5 +1,5 @@
 using Plots, DifferentialEquations
-
+#NOTE : Nisam ovde komentarisao delove koji se ponavljaju ima poseban fajl za postupak resavanja sistema dif. jednacina.
 #---URADJENI PRIMERI---
 #Primer 1
 function f(t)
@@ -118,8 +118,8 @@ v1 = [x[2] for x in s.u]
 v2 = [x[4] for x in s.u]
 
 #Koordinate maksimalne brzine oba tela
--,index1 = findmax(abs.(v1))
--,index2 = findmax(abs.(v2))
+~,index1 = findmax(abs.(v1))
+~,index2 = findmax(abs.(v2))
 
 plot(sol.t, [v1, v2])
 #Brzina prvog u tacki <index1>
@@ -129,10 +129,10 @@ plot!([sol.t[index1]], [v1[index1]])
 plot!([sol.t[index2]], [v2[index2]])
 
 #Zbog osobina sistema svodi se na obicno deljenje ( Ubrzzanje = promena brzine po vremenu)
-a1 = diff(v1) ./ diff(sol.t)
-a2 = diff(v2) ./ diff(sol.t)
+#a1 = diff(v1) ./ diff(sol.t)
+#a2 = diff(v2) ./ diff(sol.t)
 
-plot(sol.t[1:end-1], [a1, a2])
+#plot(sol.t[1:end-1], [a1, a2])
 
 #---ZADACI ZA VEZBU---
 #Zadatak 1
@@ -145,10 +145,10 @@ function f5(t)
 	return y1 +y2
 end
 
-function primer5!(dx, x, t,p)
+function primer5!(dx, x, p, t)
 	m1, m2, k1, k2, c1, c2, c3 = p
 	dx[1] = x[2]
-	dx[2] = (1/m1)*(-c1*x[2] -k1*x[1] - k2*(x[3] - x[1])
+	dx[2] = (1/m1)*(-c1*x[2] -k1*x[1] - k2*(x[3] - x[1]))
 	dx[3] = x[4]
 	dx[4] = (1/m2) * (f5(t) - k2*(x[3] -x[1]) - x[4] * (c3 + c2))
 end
@@ -158,20 +158,20 @@ t = (0.0, 20.0)
 p = (20.0, 10.0, 20.0, 40.0, 10.0, 10.0, 10.0)
 
 prob = ODEProblem(primer5!, x0, t, p)
-s = solve(prob)
+sol = solve(prob)
 #c)
 
 #brzine 1. i 2. tela
-v1 = [x[2] for x in s.u]
-v2 = [x[4] for x in s.u]
+v1 = [x[2] for x in sol.u]
+v2 = [x[4] for x in sol.u]
 
 #koordinate maksimalnih brzina prvog i drugog tela
--, index1 =  findmax(abs.(v1))
--, index2 =  findmax(abs.(v2))
+~, index1 =  findmax(abs.(v1))
+~, index2 =  findmax(abs.(v2))
 
-plot(sol.t, [v1, v2])
-plot!(sol.t[index1], v1[index1])
-plot!(sol.t[index2], v2[index2])
+plot([sol.t], [v1, v2])
+plot!([sol.t[index1]], [v1[index1]])
+plot!([sol.t[index2]], [v2[index2]])
 
 #d)
 #Vektor pomeraja u svakom trenutku simulacije
@@ -190,7 +190,7 @@ function f6(t)
 	return y1 + y2
 end
 
-function primer6!(dx, x, t, p)
+function primer6!(dx, x, p, t)
 	m1, m2, k1, k2, c1, c2, g = p
 	dx[1] = x[2]
 	dx[2] = (1/m1)*(m1*g + k2*(x[3] -x[1]) - k1*x[1] - c1*x[2])
@@ -214,7 +214,7 @@ plot(s)
 plot!(s.t, [v1, poz1])
 
 a1 = diff(v1) ./ diff(s.t)
--, a_max = findmax(abs.(a1))
+~, a_max = findmax(abs.(a1))
 
 plot!([s.t[a_max]], [a1[a_max]])
 
@@ -225,7 +225,8 @@ function f7(t)
 	return sin(3*t/3.14)
 end
 
-function primer7!(dx, x, t, p)
+
+function primer7!(dx, x, p, t)
 	m1, m2, m3, k, c, g = p
 	dx[1] = x[2]
 	dx[2] = (1/m1) * (m1*g + c * (x[4] - x[2]) + k* ( x[3] - x[1]) -k * x[1])
@@ -244,20 +245,28 @@ sol = solve(prob)
 
 plot(sol)
 
+#Pozicije tela m1, m2 u svakom trenutku t
 poz1 = [x[1] for x in sol.u]
 poz2 = [x[3] for x in sol.u]
 
--,poz_max1 = findmax(abs.(poz1))
--,poz_max2 = findmax(abs.(poz2))
+#Koordinate maksimalnih(Najudaljenih pozicija) tela m1, m2
+~,poz_max1 = findmax(abs.(poz1))
+~,poz_max2 = findmax(abs.(poz2))
 
+#Plotovanje
 plot(sol.t, [poz1, poz2])
 plot!([sol.t[poz_max1]], [poz1[poz_max1]])
 plot!([sol.t[poz_max2]], [poz2[poz_max2]])
 
+#Pozicija tela m3 u svakom trenutku t
 poz3 = [x[5] for x in sol.u]
 
+#Rastojanje kao d = |x2 - x1| u svakoj tackoj
 rastojanje = abs.(poz2 .- poz3)
 plot!(sol.t, rastojanje)
+
+
+
 
 
 

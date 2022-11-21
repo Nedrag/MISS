@@ -28,9 +28,21 @@ p = (10.0, 5.0, 10.0, 10.0, 15.0, 1.0)
 
 prob = ODEProblem(primer1!, x0, t, p)
 sol = solve(prob)
-
+#Cuvanje 
 dir = dirname(@__FILE__()) 
 savefig(plot(sol), "$dir/zad01.png")
+#Promena Ugoaone brzine i ubrzanja
 
+v = [x[4] for x in sol.u]
+a = diff(v) ./ diff(sol.t)
+
+plot_ubrzanje_brzina = plot([sol.t[1:end-1]], [v[1:end-1], a]) 
+savefig(plot_ubrzanje_brzina, "$dir/zad011.png")
+
+poz = [x[1] for x in sol.u]
+v = [x[2] for x in sol.u]
+
+plot_brzina_poz = plot([sol.t], [poz, v])
+savefig(plot_brzina_poz, "$dir/zad012.png")
 
 

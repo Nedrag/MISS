@@ -26,8 +26,10 @@ prob = ODEProblem(primer1!, x0, t, p)
 s = solve(prob)
 
 #Plotovanje
-p = plot(s)
-gui(p)
+zad1 = plot(s)
+#Save
+dir = dirname(@__FILE__())
+savefig(zad1, "$dir/zad01.png")
 
 #Primer 2
 function f1(t)

@@ -222,7 +222,7 @@ plot!([s.t[a_max]], [a1[a_max]])
 #Zadatak 3
 
 function f7(t)
-	return sin(3*t/3.14)
+	return abs(sin(3*t/3.14))
 end
 
 
@@ -266,20 +266,61 @@ rastojanje = abs.(poz2 .- poz3)
 plot!(sol.t, rastojanje)
 
 
+#Zadatak 4
+
+function f8(t)
+	tp = rem.(t, 3)
+	y1 = tp/3 .* ((tp .>= 0) .& (tp .< 2.25))
+	y2 = abs.(sin(3*tp/3.14)) .* ((tp .>= 2.25) .& (tp .< 3))
+	return y1 + y2
+end
+
+function primer8!(dx, x, p, t)
+	m1, m2, c1, c2, k1, k2, g = p
+	dx[1] = x[2]
+	dx[2] = (1/m1)*(f8(t) -c1*x[2] - k1 * (x[1] - x[3]))
+	dx[3] = x[4]
+	dx[4] = (1/m2) * (k1*(x[1] -x[3]) -m2 * g - c2 * x[4] -k2 * x[3])
+end
 
 
+x0 = [0.0, 0.0, 0.0, 0.0]
+t= (0.0, 12.0)
+p = (10.0, 8.0, 5.0, 10.0, 15.0, 15.0, 9.81)
 
+prob = ODEProblem(primer8!, x0, t, p)
+sol = solve(prob)
 
+plot(sol)
 
+poz1 = [x[1] for x in sol.u]
+poz2 = [x[2] for x in sol.u]
 
+#Promena pozicije oba tela
+pp1 = abs.(diff(poz1))
+pp2 = abs.(diff(poz2))
 
+plot(sol.t, [pp1, pp2])
 
+v1 = [x[2] for x in sol.u]
+v2 = [x[4] for x in sol.u]
 
+pv1 = abs.(diff(v1))
+pv2 = abs.(diff(v2))
 
+~, v1max = findmax(abs.(v1))
+~, v2max = findmax(abs.(v2))
 
+plot(sol.t, [pv1, pv2])
+plot!([sol.t[v1max]], [pv1[v1max]])
+plot!([sol.t[v2max]], [pv2[v2max]])
 
+a1 = diff(v1) ./ diff(sol.t)
+a2 = diff(v2) ./ diff(sol.t)
 
+~, a1max = findmax(abs.(a1))
+~, a2max = findmax(abs.(a2))
 
-
+#plot([sol.t[1:end-1]], [a1,a2])
 
 

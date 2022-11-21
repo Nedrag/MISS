@@ -299,8 +299,8 @@ poz1 = [x[1] for x in sol.u]
 poz2 = [x[2] for x in sol.u]
 
 #Promena pozicije oba tela
-pp1 = abs.(diff(poz1))
-pp2 = abs.(diff(poz2))
+pp1 = sum(abs.(diff(poz1)))
+pp2 = sum(abs.(diff(poz2)))
 
 plot(sol.t, [pp1, pp2])
 
@@ -323,6 +323,6 @@ a2 = diff(v2) ./ diff(sol.t)
 ~, a1max = findmax(abs.(a1))
 ~, a2max = findmax(abs.(a2))
 
-#plot([sol.t[1:end-1]], [a1,a2])
+plot([sol.t[1:end-1]], [a1,a2])
 
 
